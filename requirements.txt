@@ -73,7 +73,6 @@ pytz==2021.1
 PyYAML==5.4.1
 pyzmq==22.1.0
 requests==2.25.0
-ruamel-yaml-conda==0.15.80
 s3transfer==0.4.2
 Send2Trash==1.5.0
 setuptools==51.0.0.post20201207
