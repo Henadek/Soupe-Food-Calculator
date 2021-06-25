@@ -8,19 +8,6 @@ import pandas as pd
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ### IMPLEMENT CALCULATOR MODEL
 
 from collections import Counter
@@ -507,13 +494,13 @@ class FoodCalculator:
 #                               }
 #                   }
 
-budget_plan = {'daily':0, 'monthly':2}
+# budget_plan = {'daily':0, 'monthly':2}
 
-selected_foods = ['Jollof Rice','White Rice','Egusi Soup',
-                  'Spaghetti','Porridge','Eba','Pap',
-                  'Stew','Efo-riro','Vegetable Soup',
-                  'Moin-moin'
-                 ]
+# selected_foods = ['Jollof Rice','White Rice','Egusi Soup',
+#                   'Spaghetti','Porridge','Eba','Pap',
+#                   'Stew','Efo-riro','Vegetable Soup',
+#                   'Moin-moin'
+#                  ]
 
 # calculator = FoodCalculator(income= 0, hh_size=2)
 
@@ -539,46 +526,45 @@ selected_foods = ['Jollof Rice','White Rice','Egusi Soup',
 
 
 
+#######################################################################
+##########################  GUI BEGINS HERE  ##########################
 
 
-# GUI BEGINS HERE
-st.markdown('''# SOUPE FOOD CALCULATOR
+st.markdown("<h1 style='text-align: center'> SOUPE FOOD CALCULATOR </h1>", unsafe_allow_html=True)
 
-    ''')
-
-# BUILD FIELDS FOR INCOME LEVEL AND HH SIZE
+# BUILD FIELDS FOR INCOME LEVEL: AND HH SIZE
 income_range = ['10,000 - 40,000', '41,000 - 100,000',
                 '101,000 - 200,000', '201,000+']
-hh_size = range(1,501)
+hh_size = range(1,1000)
 budget_plan = ['Daily', 'Weekly', 'Monthly']
 selected_income = st.sidebar.selectbox('Select Income Level', income_range)
-selected_hh = st.sidebar.selectbox('Select HH-Size', hh_size)
+selected_hh = st.sidebar.selectbox('Select No. of People to Plan for', hh_size)
 budget_type = st.sidebar.selectbox('Select Budget Type', budget_plan)
 
 
 # Set HH Segmentation Container
 st.beta_container()
-hh_expander = st.beta_expander(label='Household Segmentation')
+hh_expander = st.beta_expander(label='People Segmentation')
 with hh_expander:
     cols = st.beta_columns(2)
     # set headers for male and female
-    cols[0].subheader('Male Household Segmentation')
-    cols[1].subheader('Female Household Segmentation')
+    cols[0].subheader('Male Segmentation')
+    cols[1].subheader('Female Segmentation')
     # generate selectfields
-    t_mchild = cols[0].selectbox('Total Male Child', range(10))
-    t_madolescent = cols[0].selectbox('Total Male Adolescent', range(10))
-    t_mmiddleage = cols[0].selectbox('Total Male Middle-age', range(10))
-    t_madult = cols[0].selectbox('Total Male Adult', range(10))
-    t_maged = cols[0].selectbox('Total Male Aged', range(10))
-    t_fchild = cols[1].selectbox('Total Female Child', range(10))
-    t_fadolescent = cols[1].selectbox('Total Female Adolescent', range(10))
-    t_fmiddleage = cols[1].selectbox('Total Female Middle-age', range(10))
-    t_fadult = cols[1].selectbox('Total Female Adult', range(10))
-    t_faged = cols[1].selectbox('Total Female Aged', range(10))
+    t_mchild = cols[0].selectbox('Total Male Child (2-5)', range(100))
+    t_madolescent = cols[0].selectbox('Total Male Adolescent (6-19)', range(100))
+    t_mmiddleage = cols[0].selectbox('Total Male Middle-age (20-29)', range(100))
+    t_madult = cols[0].selectbox('Total Male Adult (30-50)', range(100))
+    t_maged = cols[0].selectbox('Total Male Aged (51+)', range(100))
+    t_fchild = cols[1].selectbox('Total Female Child (2-5)', range(100))
+    t_fadolescent = cols[1].selectbox('Total Female Adolescent (6-19)', range(100))
+    t_fmiddleage = cols[1].selectbox('Total Female Middle-age (20-29)', range(100))
+    t_fadult = cols[1].selectbox('Total Female Adult (30-50)', range(100))
+    t_faged = cols[1].selectbox('Total Female Aged (51+)', range(100))
 
 
 # Set FoodList Container
-foodlist = ['Jollof Rice','White Rice','Egusi Soup',
+foodlist = ['','Jollof Rice','White Rice','Egusi Soup',
             'Spaghetti','Porridge','Eba',
             'Pap','Stew','Vegetable Soup'
             ]
@@ -622,27 +608,38 @@ food_freq_mapping = {'Freq1': Food1,'Freq2': Food2,'Freq3': Food3,
                     'Freq4': Food4,'Freq5': Food5,'Freq6': Food6,
                     'Freq7': Food7,'Freq8': Food8,'Freq9': Food9
                     }
+def daily():
+    track = 0
+    foods = {}
+    for get_freq in [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]:
+        track+=1
+        if get_freq>0 and food_freq_mapping['Freq'+str(track)]!='':
+            curr_food = food_freq_mapping['Freq'+str(track)]
+            # print(curr_food)
+            foods[curr_food] = get_freq
+
+    # print(foods)
+    # foods = {'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}
+
+    # pass in the hh_segmentation to the calculator engine
+    calculator.engine(hh_segmentation, budget_plan = 0, **foods)
+    st.write(f"Total Ingredients Qty for {', '.join(list(foods.keys()))} for {selected_hh} {['person' if selected_hh==1 else 'people'][0]}")
+    foodrez = calculator.result()
+
+    ct = 0
+    for k in foods.keys():
+        st.write(k)
+        ab = pd.DataFrame(foodrez[ct].items(), columns=['Ingredients', 'Qty'])
+        st.dataframe(ab)
+        ct+=1
+
+
 if calculateButton:
+
     calculator = FoodCalculator(income= selected_income, hh_size=selected_hh)
-
-    # FOR DAILY BUDGET
-    if budget_type =='Daily':
-        track = 0
-        foods = {}
-        for get_freq in [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]:
-            track+=1
-            if get_freq>0:
-                curr_food = food_freq_mapping['Freq'+str(track)]
-                # print(curr_food)
-                foods[curr_food] = get_freq
-
-        # print(foods)
-        # foods = {'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}
-
-
-        # pass in the hh_segmentation to the calculator engine
-
-        hh_segmentation = {'Males': {'total_child': t_mchild, 'total_adolescent': t_madolescent,
+    
+    # set hh_segmentation
+    hh_segmentation = {'Males': {'total_child': t_mchild, 'total_adolescent': t_madolescent,
                                  'total_middle_age': t_mmiddleage, 'total_adult': t_madult,
                                  'total_aged': t_maged
                                 }, 
@@ -652,29 +649,359 @@ if calculateButton:
                                   }
                       }
 
+    # FOR DAILY BUDGET
+    if budget_type =='Daily':
+        daily()
+
+    # FOR WEEKLY BUDGET
+    elif budget_type == 'Weekly':
+        track = 0
+        foods = {}
+        for get_freq in [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]:
+            track+=1
+            if get_freq>0:
+                curr_food = food_freq_mapping['Freq'+str(track)]
+                # print(curr_food)
+                foods[curr_food] = get_freq
 
 
+        # pass in the hh_segmentation to the calculator engine and initialize with dummy food
+        dummy_food =  {'food1':0, 'food2':0}
+        calculator.engine(hh_segmentation, budget_plan = 0, **dummy_food)
 
-        calculator.engine(hh_segmentation, budget_plan = 0, **foods)
-        st.write(f"Total Ingredients Qty for {', '.join(list(foods.keys()))}")
-        foodrez = calculator.result()
+        aa = [{'monday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
+                {'tuesday':{'Jollof Rice':1, 'Porridge':1}},
+                {'wednesday':{'White Rice':1, 'Stew': 1, 'Egusi Soup':2}},
+                {'thursday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
+                {'friday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
+                {'saturday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
+                {'sunday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
+                ]
 
-        ct = 0
-        for k in foods.keys():
-            st.write(k)
-            ab = pd.DataFrame(foodrez[ct].items(), columns=['Ingredients', 'Qty'])
-            st.dataframe(ab)
-            ct+=1
-    elif budget_plan == 'Weekly': pass
-        # FOR WEEKLY BUDGET
-        # aa = [{'monday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-        #         {'tuesday':{'Pap':1, 'Porridge':1}},
-        #         {'wednesday':{'White Rice':1, 'Stew': 1, 'Egusi Soup':2}},
-        #         {'thurday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-        #         {'friday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-        #         {'saturday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-        #         {'sunday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-        #         ]
-        # calculator.weeklybudget(aa)
+        foodrez = calculator.weeklybudget(aa)
+        st.write(f"Total Ingredients Qty for {', '.join(list(foods.keys()))} for {selected_hh} {['person' if selected_hh==1 else 'people'][0]} Per Week")
+        # st.write(foodrez)
+
+        # ct = 0
+        days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        weeklyresult = {"daily": {
+                            "monday": [
+                              {
+                                "Spaghetti": "166g",
+                                "Tomato_Paste": "23g",
+                                "Pepper": "168g",
+                                "Onion": "8g",
+                                "G/N_Oil": "51ml",
+                                "Fish": "60g",
+                                "Salt": "3g",
+                                "Maggi": "3g",
+                                "Egg": "79g"
+                              },
+                              {
+                                "Garri": "410g"
+                              },
+                              {
+                                "Pap": "48g",
+                                "Milk": "81g",
+                                "Sugar": "41g"
+                              },
+                              {
+                                "Vegetable": "69g",
+                                "Pepper": "303g",
+                                "Salt": "7g",
+                                "Palm_Oil": "170ml",
+                                "Beef": "480g",
+                                "Maggi": "6g",
+                                "Onion": "60g",
+                                "Ponmo": "141g",
+                                "Fish": "0g",
+                                "Stock_Fish": "180g",
+                                "Periwinkle": "240g",
+                                "Cray_Fish": "54g",
+                                "Snail": "360g"
+                              }
+                            ],
+                            "tuesday": [
+                                {
+                                "Rice": "158g",
+                                "Tomato_Paste": "45g",
+                                "Tomato/Pepper": "153g",
+                                "Onion": "27g",
+                                "G/N_Oil": "63ml",
+                                "Curry": "1g",
+                                "Thyme": "1g",
+                                "Salt": "3g",
+                                "Maggi": "3g",
+                                "Turkey/Beef/Chicken": "110g"
+                              },
+                              {
+                                "Yam": "1362g",
+                                "Vegetable": "13g",
+                                "Pepper": "92g",
+                                "Onion": "17g",
+                                "Cray Fish": "25g",
+                                "Fish": "110g",
+                                "Palm_Oil": "51ml",
+                                "Salt": "3g",
+                                "Maggi": "2g"
+                              }
+                            ],
+                            "wednesday": [
+                              {
+                                "Rice": "158g",
+                                "Tomato/Pepper": "134g",
+                                "Onion": "23g",
+                                "G/N_Oil": "63ml",
+                                "Curry": "1g",
+                                "Thyme": "1g",
+                                "Salt": "3g",
+                                "Maggi": "2g",
+                                "Turkey/Beef/Chicken": "80g"
+                              },
+                              {
+                                "Tomato/Pepper": "571g",
+                                "Tomato_Paste": "48g",
+                                "Salt": "4g",
+                                "Palm_Oil": "40ml",
+                                "Beef": "110g",
+                                "Maggi": "3g",
+                                "Onion": "15g",
+                                "Garlic": "1g",
+                                "Ginger": "9g",
+                                "Curry": "2g",
+                                "Thyme": "1g",
+                                "Ponmo": "120g",
+                                "Fish": "50g",
+                                "Chicken": "240g"
+                              },
+                              {
+                                "Egusi": "172g",
+                                "Pepper": "277g",
+                                "Salt": "7g",
+                                "Palm_Oil": "170ml",
+                                "Beef": "220g",
+                                "Maggi": "6g",
+                                "Onion": "30g",
+                                "Vegetable": "27g",
+                                "Ponmo": "141g",
+                                "Stock_Fish": "86g",
+                                "Periwinkle": "240g",
+                                "Snail": "360g",
+                                "Dry_Fish": "240g"
+                              }
+                            ],
+                            "thursday": [
+                              {
+                                "Spaghetti": "166g",
+                                "Tomato_Paste": "23g",
+                                "Pepper": "168g",
+                                "Onion": "8g",
+                                "G/N_Oil": "51ml",
+                                "Fish": "60g",
+                                "Salt": "3g",
+                                "Maggi": "3g",
+                                "Egg": "79g"
+                              },
+                              {
+                                "Garri": "410g"
+                              },
+                              {
+                                "Pap": "48g",
+                                "Milk": "81g",
+                                "Sugar": "41g"
+                              },
+                              {
+                                "Vegetable": "69g",
+                                "Pepper": "303g",
+                                "Salt": "7g",
+                                "Palm_Oil": "170ml",
+                                "Beef": "480g",
+                                "Maggi": "6g",
+                                "Onion": "60g",
+                                "Ponmo": "141g",
+                                "Fish": "0g",
+                                "Stock_Fish": "180g",
+                                "Periwinkle": "240g",
+                                "Cray_Fish": "54g",
+                                "Snail": "360g"
+                              }
+                            ],
+                            "friday": [
+                              {
+                                "Spaghetti": "166g",
+                                "Tomato_Paste": "23g",
+                                "Pepper": "168g",
+                                "Onion": "8g",
+                                "G/N_Oil": "51ml",
+                                "Fish": "60g",
+                                "Salt": "3g",
+                                "Maggi": "3g",
+                                "Egg": "79g"
+                              },
+                              {
+                                "Garri": "410g"
+                              },
+                              {
+                                "Pap": "48g",
+                                "Milk": "81g",
+                                "Sugar": "41g"
+                              },
+                              {
+                                "Vegetable": "69g",
+                                "Pepper": "303g",
+                                "Salt": "7g",
+                                "Palm_Oil": "170ml",
+                                "Beef": "480g",
+                                "Maggi": "6g",
+                                "Onion": "60g",
+                                "Ponmo": "141g",
+                                "Fish": "0g",
+                                "Stock_Fish": "180g",
+                                "Periwinkle": "240g",
+                                "Cray_Fish": "54g",
+                                "Snail": "360g"
+                              }
+                            ],
+                            "saturday": [
+                              {
+                                "Spaghetti": "166g",
+                                "Tomato_Paste": "23g",
+                                "Pepper": "168g",
+                                "Onion": "8g",
+                                "G/N_Oil": "51ml",
+                                "Fish": "60g",
+                                "Salt": "3g",
+                                "Maggi": "3g",
+                                "Egg": "79g"
+                              },
+                              {
+                                "Garri": "410g"
+                              },
+                              {
+                                "Pap": "48g",
+                                "Milk": "81g",
+                                "Sugar": "41g"
+                              },
+                              {
+                                "Vegetable": "69g",
+                                "Pepper": "303g",
+                                "Salt": "7g",
+                                "Palm_Oil": "170ml",
+                                "Beef": "480g",
+                                "Maggi": "6g",
+                                "Onion": "60g",
+                                "Ponmo": "141g",
+                                "Fish": "0g",
+                                "Stock_Fish": "180g",
+                                "Periwinkle": "240g",
+                                "Cray_Fish": "54g",
+                                "Snail": "360g"
+                              }
+                            ],
+                            "sunday": [
+                              {
+                                "Spaghetti": "166g",
+                                "Tomato_Paste": "23g",
+                                "Pepper": "168g",
+                                "Onion": "8g",
+                                "G/N_Oil": "51ml",
+                                "Fish": "60g",
+                                "Salt": "3g",
+                                "Maggi": "3g",
+                                "Egg": "79g"
+                              },
+                              {
+                                "Garri": "410g"
+                              },
+                              {
+                                "Pap": "48g",
+                                "Milk": "81g",
+                                "Sugar": "41g"
+                              },
+                              {
+                                "Vegetable": "69g",
+                                "Pepper": "303g",
+                                "Salt": "7g",
+                                "Palm_Oil": "170ml",
+                                "Beef": "480g",
+                                "Maggi": "6g",
+                                "Onion": "60g",
+                                "Ponmo": "141g",
+                                "Fish": "0g",
+                                "Stock_Fish": "180g",
+                                "Periwinkle": "240g",
+                                "Cray_Fish": "54g",
+                                "Snail": "360g"
+                              }
+                            ]
+                          }
+                        }
+
+        for day in days:
+            final_foodlist = {}
+            st.write(day)
+            day= day.lower()
+            for foods in weeklyresult['daily'][day]:
+                # st.write(foods)
+                for meal in foods.keys():
+                    if '_' in meal:
+                        meal = meal.replace('_', ' ')
+
+                    if 'Garri' in list(foods.keys()) :
+                        meal = 'Eba'
+                    if 'Rice' in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                        meal = 'Jollof Rice'
+                    if 'Rice' in list(foods.keys()) and 'Tomato_Paste' not in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                        meal = 'White Rice'
+                    if 'Rice' not in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                        meal = 'Stew'
+                    if 'Egusi' in list(foods.keys()) :
+                        meal = 'Egusi Soup'
+                    if 'Vegetable' in list(foods.keys()) and 'Yam' not in list(foods.keys()) and 'Egusi' not in list(foods.keys()):
+                        meal = 'Vegetable Soup'
+                    if 'Yam' in list(foods.keys()) and 'Vegetable' in list(foods.keys()):
+                        meal = 'Porridge'
+
+                    if meal in foodlist:
+                        meal1 = foodlist[foodlist.index(meal)]
+                        if meal1 in foodlist:
+                            if meal1 not in final_foodlist:
+                                # st.write(meal1)
+                                final_foodlist[meal1]=foods
+
+            # st.write(final_foodlist)
+            dayfoodcontainer = st.beta_container()
+            with dayfoodcontainer:
+                foodarray = list(final_foodlist.keys())
+                foodcols = st.beta_columns(2)
+                ct = 1
+                for i in range(len(foodarray)):
+                    pair = foodarray[i:i+2]
+                    if ct==1:
+                        # st.write(pair)
+                        foodcols[0].subheader(pair[0])
+                        foodcols[1].subheader(pair[1])
+                        # populate dataframes based on no. of columns from data result
+                        dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                        dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
+                        foodcols[0].dataframe(dataframe1)
+                        foodcols[1].dataframe(dataframe2)
+                    elif ct%2!=0 and ct!=len(foodarray):
+                        # st.write(pair)
+                        foodcols[0].subheader(pair[0])
+                        foodcols[1].subheader(pair[1])
+                        # populate dataframes based on no. of columns from data result
+                        dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                        dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
+                        foodcols[0].dataframe(dataframe1)
+                        foodcols[1].dataframe(dataframe2)
+                    elif ct%2!=0 and ct==len(foodarray):
+                        foodcols[0].subheader(pair[0])
+                        # populate dataframes based on no. of columns from data result
+                        dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                        foodcols[0].dataframe(dataframe1)
+                    ct+=1
+
     else:
         st.write('Not Yet Implemented!')
+

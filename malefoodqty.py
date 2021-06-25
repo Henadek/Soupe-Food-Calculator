@@ -464,6 +464,7 @@ male_aged_foods = {'Jollof Rice': [{'Rice': 241.16, 'Tomato_Paste': 89.32,
                                    'G/N_Oil': 0
                                   },
                                             {'freq': 1}
+
                                  ],
                          'Vegetable Soup': [{'Vegetable': 26.80,'Pepper': 197.40,
                                              'Salt': 7.62,'Palm_Oil': 83.7,
