@@ -535,7 +535,7 @@ st.markdown("<h1 style='text-align: center'> SOUPE FOOD CALCULATOR </h1>", unsaf
 # BUILD FIELDS FOR INCOME LEVEL: AND HH SIZE
 income_range = ['10,000 - 40,000', '41,000 - 100,000',
                 '101,000 - 200,000', '201,000+']
-hh_size = range(1,1000)
+hh_size = range(1,1001)
 budget_plan = ['Daily', 'Weekly', 'Monthly']
 selected_income = st.sidebar.selectbox('Select Income Level', income_range)
 selected_hh = st.sidebar.selectbox('Select No. of People to Plan for', hh_size)
@@ -551,52 +551,64 @@ with hh_expander:
     cols[0].subheader('Male Segmentation')
     cols[1].subheader('Female Segmentation')
     # generate selectfields
-    t_mchild = cols[0].selectbox('Total Male Child (2-5)', range(100))
-    t_madolescent = cols[0].selectbox('Total Male Adolescent (6-19)', range(100))
-    t_mmiddleage = cols[0].selectbox('Total Male Middle-age (20-29)', range(100))
-    t_madult = cols[0].selectbox('Total Male Adult (30-50)', range(100))
-    t_maged = cols[0].selectbox('Total Male Aged (51+)', range(100))
-    t_fchild = cols[1].selectbox('Total Female Child (2-5)', range(100))
-    t_fadolescent = cols[1].selectbox('Total Female Adolescent (6-19)', range(100))
-    t_fmiddleage = cols[1].selectbox('Total Female Middle-age (20-29)', range(100))
-    t_fadult = cols[1].selectbox('Total Female Adult (30-50)', range(100))
-    t_faged = cols[1].selectbox('Total Female Aged (51+)', range(100))
+    t_mchild = cols[0].selectbox('Total Male Child (2-5)', range(101))
+    t_madolescent = cols[0].selectbox('Total Male Adolescent (6-19)', range(101))
+    t_mmiddleage = cols[0].selectbox('Total Male Middle-age (20-29)', range(101))
+    t_madult = cols[0].selectbox('Total Male Adult (30-50)', range(101))
+    t_maged = cols[0].selectbox('Total Male Aged (51+)', range(101))
+    t_fchild = cols[1].selectbox('Total Female Child (2-5)', range(101))
+    t_fadolescent = cols[1].selectbox('Total Female Adolescent (6-19)', range(101))
+    t_fmiddleage = cols[1].selectbox('Total Female Middle-age (20-29)', range(101))
+    t_fadult = cols[1].selectbox('Total Female Adult (30-50)', range(101))
+    t_faged = cols[1].selectbox('Total Female Aged (51+)', range(101))
 
-
-# Set FoodList Container
+# set global available foodlist
 foodlist = ['','Jollof Rice','White Rice','Egusi Soup',
-            'Spaghetti','Porridge','Eba',
-            'Pap','Stew','Vegetable Soup'
-            ]
+                'Spaghetti','Porridge','Eba',
+                'Pap','Stew','Vegetable Soup'
+                ]
 
-foodlistcontainer = st.sidebar.beta_container()
-foodlist_expander = st.beta_expander(label='Foodlist Selector')
-with foodlist_expander:
-    foodcols = st.beta_columns(2)
-    # set headers for male and female
-    foodcols[0].subheader('Select Your Food')
-    foodcols[1].subheader('Daily Food Frequency')
-    # generate selectfields
-    Food1 = foodcols[0].selectbox('Food1', foodlist)
-    Food2 = foodcols[0].selectbox('Food2', foodlist)
-    Food3 = foodcols[0].selectbox('Food3', foodlist)
-    Food4 = foodcols[0].selectbox('Food4', foodlist)
-    Food5 = foodcols[0].selectbox('Food5', foodlist)
-    Food6 = foodcols[0].selectbox('Food6', foodlist)
-    Food7 = foodcols[0].selectbox('Food7', foodlist)
-    Food8 = foodcols[0].selectbox('Food8', foodlist)
-    Food9 = foodcols[0].selectbox('Food9', foodlist)
+def show_dailyfields():
+    # shows the fields for daily budget.
+    # Set FoodList Container
+    foodlist = ['','Jollof Rice','White Rice','Egusi Soup',
+                'Spaghetti','Porridge','Eba',
+                'Pap','Stew','Vegetable Soup'
+                ]
 
-    Freq1 = foodcols[1].selectbox('Frequency1', range(0,4))
-    Freq2 = foodcols[1].selectbox('Frequency2', range(0,4))
-    Freq3 = foodcols[1].selectbox('Frequency3', range(0,4))
-    Freq4 = foodcols[1].selectbox('Frequency4', range(0,4))
-    Freq5 = foodcols[1].selectbox('Frequency5', range(0,4))
-    Freq6 = foodcols[1].selectbox('Frequency6', range(0,4))
-    Freq7 = foodcols[1].selectbox('Frequency7', range(0,4))
-    Freq8 = foodcols[1].selectbox('Frequency8', range(0,4))
-    Freq9 = foodcols[1].selectbox('Frequency9', range(0,4))
+    foodlistcontainer = st.sidebar.beta_container()
+    foodlist_expander = st.beta_expander(label='Foodlist Selector')
+    with foodlist_expander:
+        foodcols = st.beta_columns(2)
+        # set headers for male and female
+        foodcols[0].subheader('Select Your Food')
+        foodcols[1].subheader('Daily Food Frequency')
+        # generate selectfields
+        Food1 = foodcols[0].selectbox('Food1', foodlist)
+        Food2 = foodcols[0].selectbox('Food2', foodlist)
+        Food3 = foodcols[0].selectbox('Food3', foodlist)
+        Food4 = foodcols[0].selectbox('Food4', foodlist)
+        Food5 = foodcols[0].selectbox('Food5', foodlist)
+        Food6 = foodcols[0].selectbox('Food6', foodlist)
+        Food7 = foodcols[0].selectbox('Food7', foodlist)
+        Food8 = foodcols[0].selectbox('Food8', foodlist)
+        Food9 = foodcols[0].selectbox('Food9', foodlist)
 
+        Freq1 = foodcols[1].selectbox('Frequency1', range(0,4))
+        Freq2 = foodcols[1].selectbox('Frequency2', range(0,4))
+        Freq3 = foodcols[1].selectbox('Frequency3', range(0,4))
+        Freq4 = foodcols[1].selectbox('Frequency4', range(0,4))
+        Freq5 = foodcols[1].selectbox('Frequency5', range(0,4))
+        Freq6 = foodcols[1].selectbox('Frequency6', range(0,4))
+        Freq7 = foodcols[1].selectbox('Frequency7', range(0,4))
+        Freq8 = foodcols[1].selectbox('Frequency8', range(0,4))
+        Freq9 = foodcols[1].selectbox('Frequency9', range(0,4))
+
+    food_freq_mapping = {'Freq1': Food1,'Freq2': Food2,'Freq3': Food3,
+                        'Freq4': Food4,'Freq5': Food5,'Freq6': Food6,
+                        'Freq7': Food7,'Freq8': Food8,'Freq9': Food9
+                        }
+    return [food_freq_mapping, [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]]
 
 # Set Calculate Button
 calculateButton = st.sidebar.button('Calculate')
@@ -604,17 +616,75 @@ calculateButton = st.sidebar.button('Calculate')
 
 
 
-food_freq_mapping = {'Freq1': Food1,'Freq2': Food2,'Freq3': Food3,
-                    'Freq4': Food4,'Freq5': Food5,'Freq6': Food6,
-                    'Freq7': Food7,'Freq8': Food8,'Freq9': Food9
-                    }
-def daily():
+
+
+def show_weeklyfields():
+    # shows the fields for weekly budget and deactivates the daily fields.
+    foodlist = ['','Jollof Rice','White Rice','Egusi Soup',
+            'Spaghetti','Porridge','Eba',
+            'Pap','Stew','Vegetable Soup'
+            ]
+    weekly_foodlist_expander = st.beta_expander(label='Weekly Foodlist Selector')
+    with weekly_foodlist_expander:
+        weekly_foodcols = st.beta_columns(1)
+        # set header for weekly food
+        weekly_foodcols[0].subheader('Select Your Food')
+        # generate food multi-selectfields for all days in week
+        weekly_selected_foods = {}
+        for days in ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']:
+            nday = weekly_foodcols[0].multiselect(days, foodlist)
+            if '' in nday:
+                nday.pop(nday.index(''))
+            weekly_selected_foods[days]=nday
+    weekly_food_structure = []
+    ct=0
+    for nday in weekly_selected_foods:
+        temp_dict = {}
+        if len(weekly_selected_foods[nday])>0:
+            # st.write(weekly_selected_foods)
+            nday_expander = st.beta_expander(label=f'{nday} Foods')
+            nday_expander.subheader(f'Food Frequency for {nday}')
+            for food in weekly_selected_foods[nday]:
+                try:
+                    meal_recurrence = nday_expander.selectbox(f'{food} Recurrence', range(0,4))
+                except:
+                    ct+=1
+                    meal_recurrence = nday_expander.selectbox(f'{food}{ct} Recurrence', range(0,4))
+                temp_dict[food]=meal_recurrence
+
+        weekly_food_structure.append({nday.lower():temp_dict})
+    return weekly_food_structure
+
+def check_food_structure(weekly_food_structure):
+    # check if all fields are filled
+    check_structure = []
+    for i in weekly_food_structure:
+        for j in i:
+            if 0 in i[j].values():
+                check_structure.append(False)
+            else: check_structure.append(True)
+    if False in check_structure:
+        st.exception(RuntimeError('Please select foods and recurrence for each day!'))
+    else:
+        # st.write(weekly_food_structure)
+        return True
+
+
+if budget_type =='Daily':
+    daily_food_structure = show_dailyfields()
+
+
+if budget_type =='Weekly':
+    weekly_food_structure = show_weeklyfields()
+
+
+def daily_algorithm(foodmapping, freq_list):
     track = 0
     foods = {}
-    for get_freq in [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]:
+    for get_freq in freq_list:
         track+=1
-        if get_freq>0 and food_freq_mapping['Freq'+str(track)]!='':
-            curr_food = food_freq_mapping['Freq'+str(track)]
+        if get_freq>0 and foodmapping['Freq'+str(track)]!='':
+            curr_food = foodmapping['Freq'+str(track)]
             # print(curr_food)
             foods[curr_food] = get_freq
 
@@ -634,6 +704,7 @@ def daily():
         ct+=1
 
 
+# calls all functions when the calculate button is pressed
 if calculateButton:
 
     calculator = FoodCalculator(income= selected_income, hh_size=selected_hh)
@@ -651,357 +722,122 @@ if calculateButton:
 
     # FOR DAILY BUDGET
     if budget_type =='Daily':
-        daily()
+        daily_algorithm(daily_food_structure[0], daily_food_structure[1])
 
     # FOR WEEKLY BUDGET
     elif budget_type == 'Weekly':
-        track = 0
-        foods = {}
-        for get_freq in [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]:
-            track+=1
-            if get_freq>0:
-                curr_food = food_freq_mapping['Freq'+str(track)]
-                # print(curr_food)
-                foods[curr_food] = get_freq
+        # check food structure is intact
+        if check_food_structure(weekly_food_structure) == True:
+            # track = 0
+            # foods = {}
+            # for get_freq in [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]:
+            #     track+=1
+            #     if get_freq>0:
+            #         curr_food = food_freq_mapping['Freq'+str(track)]
+            #         # print(curr_food)
+            #         foods[curr_food] = get_freq
 
 
-        # pass in the hh_segmentation to the calculator engine and initialize with dummy food
-        dummy_food =  {'food1':0, 'food2':0}
-        calculator.engine(hh_segmentation, budget_plan = 0, **dummy_food)
+            # pass in the hh_segmentation to the calculator engine and initialize with dummy food
+            dummy_food =  {'food1':0, 'food2':0}
+            calculator.engine(hh_segmentation, budget_plan = 0, **dummy_food)
 
-        aa = [{'monday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-                {'tuesday':{'Jollof Rice':1, 'Porridge':1}},
-                {'wednesday':{'White Rice':1, 'Stew': 1, 'Egusi Soup':2}},
-                {'thursday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-                {'friday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-                {'saturday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-                {'sunday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':2}},
-                ]
+            aa = [{'monday':{'Spaghetti':2, 'Eba': 2, 'Pap':2, 'Vegetable Soup':2}},
+                    {'tuesday':{'Jollof Rice':2, 'Porridge':2}},
+                    {'wednesday':{'White Rice':2, 'Stew': 2, 'Egusi Soup':2}},
+                    {'thursday':{'Spaghetti':2, 'Eba': 2, 'Pap':2, 'Vegetable Soup':2}},
+                    {'friday':{'Spaghetti':0, 'Eba': 0, 'Pap':0, 'Vegetable Soup':0}},
+                    {'saturday':{'Spaghetti':0, 'Eba': 0, 'Pap':0, 'Vegetable Soup':0}},
+                    {'sunday':{'Spaghetti':0, 'Eba': 0, 'Pap':0, 'Vegetable Soup':0}},
+                    ]
 
-        foodrez = calculator.weeklybudget(aa)
-        st.write(f"Total Ingredients Qty for {', '.join(list(foods.keys()))} for {selected_hh} {['person' if selected_hh==1 else 'people'][0]} Per Week")
-        # st.write(foodrez)
+            weeklyresult = calculator.weeklybudget(weekly_food_structure)
+            st.write(f"Total Ingredients Qty for {selected_hh} {['person' if selected_hh==1 else 'people'][0]} Per Week")
+            # st.write(weeklyresult)
 
-        # ct = 0
-        days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-        weeklyresult = {"daily": {
-                            "monday": [
-                              {
-                                "Spaghetti": "166g",
-                                "Tomato_Paste": "23g",
-                                "Pepper": "168g",
-                                "Onion": "8g",
-                                "G/N_Oil": "51ml",
-                                "Fish": "60g",
-                                "Salt": "3g",
-                                "Maggi": "3g",
-                                "Egg": "79g"
-                              },
-                              {
-                                "Garri": "410g"
-                              },
-                              {
-                                "Pap": "48g",
-                                "Milk": "81g",
-                                "Sugar": "41g"
-                              },
-                              {
-                                "Vegetable": "69g",
-                                "Pepper": "303g",
-                                "Salt": "7g",
-                                "Palm_Oil": "170ml",
-                                "Beef": "480g",
-                                "Maggi": "6g",
-                                "Onion": "60g",
-                                "Ponmo": "141g",
-                                "Fish": "0g",
-                                "Stock_Fish": "180g",
-                                "Periwinkle": "240g",
-                                "Cray_Fish": "54g",
-                                "Snail": "360g"
-                              }
-                            ],
-                            "tuesday": [
-                                {
-                                "Rice": "158g",
-                                "Tomato_Paste": "45g",
-                                "Tomato/Pepper": "153g",
-                                "Onion": "27g",
-                                "G/N_Oil": "63ml",
-                                "Curry": "1g",
-                                "Thyme": "1g",
-                                "Salt": "3g",
-                                "Maggi": "3g",
-                                "Turkey/Beef/Chicken": "110g"
-                              },
-                              {
-                                "Yam": "1362g",
-                                "Vegetable": "13g",
-                                "Pepper": "92g",
-                                "Onion": "17g",
-                                "Cray Fish": "25g",
-                                "Fish": "110g",
-                                "Palm_Oil": "51ml",
-                                "Salt": "3g",
-                                "Maggi": "2g"
-                              }
-                            ],
-                            "wednesday": [
-                              {
-                                "Rice": "158g",
-                                "Tomato/Pepper": "134g",
-                                "Onion": "23g",
-                                "G/N_Oil": "63ml",
-                                "Curry": "1g",
-                                "Thyme": "1g",
-                                "Salt": "3g",
-                                "Maggi": "2g",
-                                "Turkey/Beef/Chicken": "80g"
-                              },
-                              {
-                                "Tomato/Pepper": "571g",
-                                "Tomato_Paste": "48g",
-                                "Salt": "4g",
-                                "Palm_Oil": "40ml",
-                                "Beef": "110g",
-                                "Maggi": "3g",
-                                "Onion": "15g",
-                                "Garlic": "1g",
-                                "Ginger": "9g",
-                                "Curry": "2g",
-                                "Thyme": "1g",
-                                "Ponmo": "120g",
-                                "Fish": "50g",
-                                "Chicken": "240g"
-                              },
-                              {
-                                "Egusi": "172g",
-                                "Pepper": "277g",
-                                "Salt": "7g",
-                                "Palm_Oil": "170ml",
-                                "Beef": "220g",
-                                "Maggi": "6g",
-                                "Onion": "30g",
-                                "Vegetable": "27g",
-                                "Ponmo": "141g",
-                                "Stock_Fish": "86g",
-                                "Periwinkle": "240g",
-                                "Snail": "360g",
-                                "Dry_Fish": "240g"
-                              }
-                            ],
-                            "thursday": [
-                              {
-                                "Spaghetti": "166g",
-                                "Tomato_Paste": "23g",
-                                "Pepper": "168g",
-                                "Onion": "8g",
-                                "G/N_Oil": "51ml",
-                                "Fish": "60g",
-                                "Salt": "3g",
-                                "Maggi": "3g",
-                                "Egg": "79g"
-                              },
-                              {
-                                "Garri": "410g"
-                              },
-                              {
-                                "Pap": "48g",
-                                "Milk": "81g",
-                                "Sugar": "41g"
-                              },
-                              {
-                                "Vegetable": "69g",
-                                "Pepper": "303g",
-                                "Salt": "7g",
-                                "Palm_Oil": "170ml",
-                                "Beef": "480g",
-                                "Maggi": "6g",
-                                "Onion": "60g",
-                                "Ponmo": "141g",
-                                "Fish": "0g",
-                                "Stock_Fish": "180g",
-                                "Periwinkle": "240g",
-                                "Cray_Fish": "54g",
-                                "Snail": "360g"
-                              }
-                            ],
-                            "friday": [
-                              {
-                                "Spaghetti": "166g",
-                                "Tomato_Paste": "23g",
-                                "Pepper": "168g",
-                                "Onion": "8g",
-                                "G/N_Oil": "51ml",
-                                "Fish": "60g",
-                                "Salt": "3g",
-                                "Maggi": "3g",
-                                "Egg": "79g"
-                              },
-                              {
-                                "Garri": "410g"
-                              },
-                              {
-                                "Pap": "48g",
-                                "Milk": "81g",
-                                "Sugar": "41g"
-                              },
-                              {
-                                "Vegetable": "69g",
-                                "Pepper": "303g",
-                                "Salt": "7g",
-                                "Palm_Oil": "170ml",
-                                "Beef": "480g",
-                                "Maggi": "6g",
-                                "Onion": "60g",
-                                "Ponmo": "141g",
-                                "Fish": "0g",
-                                "Stock_Fish": "180g",
-                                "Periwinkle": "240g",
-                                "Cray_Fish": "54g",
-                                "Snail": "360g"
-                              }
-                            ],
-                            "saturday": [
-                              {
-                                "Spaghetti": "166g",
-                                "Tomato_Paste": "23g",
-                                "Pepper": "168g",
-                                "Onion": "8g",
-                                "G/N_Oil": "51ml",
-                                "Fish": "60g",
-                                "Salt": "3g",
-                                "Maggi": "3g",
-                                "Egg": "79g"
-                              },
-                              {
-                                "Garri": "410g"
-                              },
-                              {
-                                "Pap": "48g",
-                                "Milk": "81g",
-                                "Sugar": "41g"
-                              },
-                              {
-                                "Vegetable": "69g",
-                                "Pepper": "303g",
-                                "Salt": "7g",
-                                "Palm_Oil": "170ml",
-                                "Beef": "480g",
-                                "Maggi": "6g",
-                                "Onion": "60g",
-                                "Ponmo": "141g",
-                                "Fish": "0g",
-                                "Stock_Fish": "180g",
-                                "Periwinkle": "240g",
-                                "Cray_Fish": "54g",
-                                "Snail": "360g"
-                              }
-                            ],
-                            "sunday": [
-                              {
-                                "Spaghetti": "166g",
-                                "Tomato_Paste": "23g",
-                                "Pepper": "168g",
-                                "Onion": "8g",
-                                "G/N_Oil": "51ml",
-                                "Fish": "60g",
-                                "Salt": "3g",
-                                "Maggi": "3g",
-                                "Egg": "79g"
-                              },
-                              {
-                                "Garri": "410g"
-                              },
-                              {
-                                "Pap": "48g",
-                                "Milk": "81g",
-                                "Sugar": "41g"
-                              },
-                              {
-                                "Vegetable": "69g",
-                                "Pepper": "303g",
-                                "Salt": "7g",
-                                "Palm_Oil": "170ml",
-                                "Beef": "480g",
-                                "Maggi": "6g",
-                                "Onion": "60g",
-                                "Ponmo": "141g",
-                                "Fish": "0g",
-                                "Stock_Fish": "180g",
-                                "Periwinkle": "240g",
-                                "Cray_Fish": "54g",
-                                "Snail": "360g"
-                              }
-                            ]
-                          }
-                        }
+            # ct = 0
+            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-        for day in days:
-            final_foodlist = {}
-            st.write(day)
-            day= day.lower()
-            for foods in weeklyresult['daily'][day]:
-                # st.write(foods)
-                for meal in foods.keys():
-                    if '_' in meal:
-                        meal = meal.replace('_', ' ')
+            for day in days:
+                final_foodlist = {}
+                st.markdown(f'## {day}')
+                day= day.lower()
+                for foods in weeklyresult['daily'][day]:
+                    # st.write(foods)
+                    for meal in foods.keys():
+                        if '_' in meal:
+                            meal = meal.replace('_', ' ')
 
-                    if 'Garri' in list(foods.keys()) :
-                        meal = 'Eba'
-                    if 'Rice' in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
-                        meal = 'Jollof Rice'
-                    if 'Rice' in list(foods.keys()) and 'Tomato_Paste' not in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
-                        meal = 'White Rice'
-                    if 'Rice' not in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
-                        meal = 'Stew'
-                    if 'Egusi' in list(foods.keys()) :
-                        meal = 'Egusi Soup'
-                    if 'Vegetable' in list(foods.keys()) and 'Yam' not in list(foods.keys()) and 'Egusi' not in list(foods.keys()):
-                        meal = 'Vegetable Soup'
-                    if 'Yam' in list(foods.keys()) and 'Vegetable' in list(foods.keys()):
-                        meal = 'Porridge'
+                        if 'Garri' in list(foods.keys()) :
+                            meal = 'Eba'
+                        if 'Rice' in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                            meal = 'Jollof Rice'
+                        if 'Rice' in list(foods.keys()) and 'Tomato_Paste' not in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                            meal = 'White Rice'
+                        if 'Rice' not in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                            meal = 'Stew'
+                        if 'Egusi' in list(foods.keys()) :
+                            meal = 'Egusi Soup'
+                        if 'Vegetable' in list(foods.keys()) and 'Yam' not in list(foods.keys()) and 'Egusi' not in list(foods.keys()):
+                            meal = 'Vegetable Soup'
+                        if 'Yam' in list(foods.keys()) and 'Vegetable' in list(foods.keys()):
+                            meal = 'Porridge'
 
-                    if meal in foodlist:
-                        meal1 = foodlist[foodlist.index(meal)]
-                        if meal1 in foodlist:
-                            if meal1 not in final_foodlist:
-                                # st.write(meal1)
-                                final_foodlist[meal1]=foods
+                        if meal in foodlist:
+                            meal1 = foodlist[foodlist.index(meal)]
+                            if meal1 in foodlist:
+                                if meal1 not in final_foodlist:
+                                    # st.write(meal1)
+                                    final_foodlist[meal1]=foods
 
-            # st.write(final_foodlist)
-            dayfoodcontainer = st.beta_container()
-            with dayfoodcontainer:
-                foodarray = list(final_foodlist.keys())
-                foodcols = st.beta_columns(2)
-                ct = 1
-                for i in range(len(foodarray)):
-                    pair = foodarray[i:i+2]
-                    if ct==1:
-                        # st.write(pair)
-                        foodcols[0].subheader(pair[0])
-                        foodcols[1].subheader(pair[1])
-                        # populate dataframes based on no. of columns from data result
-                        dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
-                        dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
-                        foodcols[0].dataframe(dataframe1)
-                        foodcols[1].dataframe(dataframe2)
-                    elif ct%2!=0 and ct!=len(foodarray):
-                        # st.write(pair)
-                        foodcols[0].subheader(pair[0])
-                        foodcols[1].subheader(pair[1])
-                        # populate dataframes based on no. of columns from data result
-                        dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
-                        dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
-                        foodcols[0].dataframe(dataframe1)
-                        foodcols[1].dataframe(dataframe2)
-                    elif ct%2!=0 and ct==len(foodarray):
-                        foodcols[0].subheader(pair[0])
-                        # populate dataframes based on no. of columns from data result
-                        dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
-                        foodcols[0].dataframe(dataframe1)
-                    ct+=1
+                # st.write(final_foodlist)
+                dayfoodcontainer = st.beta_container()
+                with dayfoodcontainer:
+                    foodarray = list(final_foodlist.keys())
+                    foodcols = st.beta_columns(2)
+                    # handles food list if only equal to or greater than 2
+                    ct = 1
+                    for i in range(len(foodarray)):
+                        pair = foodarray[i:i+2]
+                        if ct==1:
+                            # st.write(pair)
+                            foodcols[0].subheader(pair[0])
+                            try:
+                                foodcols[1].subheader(pair[1])
+                            except:pass
+                            # populate dataframes based on no. of columns from data result
+                            dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                            try:
+                                dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
+                            except:pass
+                            foodcols[0].dataframe(dataframe1)
+                            try:
+                                foodcols[1].dataframe(dataframe2)
+                            except:pass
+                        elif ct%2!=0 and ct!=len(foodarray):
+                            # st.write(pair)
+                            foodcols[0].subheader(pair[0])
+                            try:
+                                foodcols[1].subheader(pair[1])
+                            except:pass
+                            # populate dataframes based on no. of columns from data result
+                            dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                            try:
+                                dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
+                            except:pass
+                            foodcols[0].dataframe(dataframe1)
+                            try:
+                                foodcols[1].dataframe(dataframe2)
+                            except:pass
+                        elif ct%2!=0 and ct==len(foodarray):
+                            foodcols[0].subheader(pair[0])
+                            # populate dataframes based on no. of columns from data result
+                            dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                            foodcols[0].dataframe(dataframe1)
+                        ct+=1
+        else:
+            st.exception(RuntimeError('Please select foods and recurrence for each day!'))
 
     else:
-        st.write('Not Yet Implemented!')
+        st.warning(' Monthly Budget is coming soon! ')
 
