@@ -3,6 +3,7 @@
 # #### Income Level, Household Size, Total Male and Female
 import malefoodqty as mfq
 import femalefoodqty as ffq
+from PIL import Image
 import streamlit as st
 import pandas as pd
 
@@ -529,9 +530,10 @@ class FoodCalculator:
 #######################################################################
 ##########################  GUI BEGINS HERE  ##########################
 
+image1 = Image.open('foodcalc_image.jpg')
 
 st.markdown("<h1 style='text-align: center'> SOUPE FOOD CALCULATOR </h1>", unsafe_allow_html=True)
-
+st.image(image1, caption='Source (Picture: Omincalculator/Getty)')
 # BUILD FIELDS FOR INCOME LEVEL: AND HH SIZE
 income_range = ['10,000 - 40,000', '41,000 - 100,000',
                 '101,000 - 200,000', '201,000+']
