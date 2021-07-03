@@ -8,6 +8,27 @@ import streamlit as st
 import pandas as pd
 
 
+# def __getIncomeLvl(self, option_no):
+#         '''
+#          *** INSTRUCTION FOR USING FUNCTION ***
+#         INPUT IS ANY VALUE FROM 0 - 3
+#         Accepts one input - The select one choice input (referenced as option_no)
+#         Gets the Income Level of the head of household
+#         Returns a dictionary of income_level
+#         '''
+#         try:
+#             option_no = int(option_no)
+#             income_range = ['10,000 - 40,000', '41,000 - 100,000',
+#                             '101,000 - 200,000', '201,000+']
+
+#             if option_no in range(len(income_range)):
+#                 get_level = {'income_level': income_range[option_no]}
+#             return get_level
+
+#         except:
+#             return f'Please select an income range within the available options'
+
+
 
 # ### IMPLEMENT CALCULATOR MODEL
 
@@ -15,8 +36,7 @@ from collections import Counter
 
 
 class FoodCalculator:
-    def __init__(self, income = None, hh_size = None):
-        self.income = income
+    def __init__(self, hh_size = None):
         self.hh_size = hh_size
         self.__data = {}
         self.__result = {}
@@ -26,26 +46,7 @@ class FoodCalculator:
         return str(self.__result)
     
     
-    def __getIncomeLvl(self, option_no):
-        '''
-         *** INSTRUCTION FOR USING FUNCTION ***
-        INPUT IS ANY VALUE FROM 0 - 3
-        Accepts one input - The select one choice input (referenced as option_no)
-        Gets the Income Level of the head of household
-        Returns a dictionary of income_level
-        '''
-        try:
-            option_no = int(option_no)
-            income_range = ['10,000 - 40,000', '41,000 - 100,000',
-                            '101,000 - 200,000', '201,000+']
-
-            if option_no in range(len(income_range)):
-                get_level = {'income_level': income_range[option_no]}
-            return get_level
-
-        except:
-            return f'Please select an income range within the available options'
-    
+        
     def __getHouseholdsize(self, hh_size):
         try:
             hh_size = int(hh_size)
@@ -316,9 +317,6 @@ class FoodCalculator:
             budget_result = self.__monthlybudget(**selected_foods)
         
         
-        # get Income Level
-        self.__data['Income'] = self.__getIncomeLvl(self.income)
-        
         # get Household Size
         self.__data['HH-Size'] = self.__getHouseholdsize(self.hh_size)
         
@@ -481,7 +479,7 @@ class FoodCalculator:
     
 
 #######################################################################    
-#####   Instantiate Food Calculator With Income Level & HH_Size   #####
+#####   Instantiate Food Calculator With HH_Size                  #####
 #######################################################################
 
 
@@ -503,7 +501,7 @@ class FoodCalculator:
 #                   'Moin-moin'
 #                  ]
 
-# calculator = FoodCalculator(income= 0, hh_size=2)
+# calculator = FoodCalculator(hh_size=2)
 
 
 # FOR DAILY BUDGET
@@ -534,12 +532,9 @@ image1 = Image.open('foodcalc_image.jpg')
 
 st.markdown("<h1 style='text-align: center'> SOUPE FOOD CALCULATOR </h1>", unsafe_allow_html=True)
 st.image(image1, caption='Source (Picture: Omincalculator/Getty)')
-# BUILD FIELDS FOR INCOME LEVEL: AND HH SIZE
-income_range = ['10,000 - 40,000', '41,000 - 100,000',
-                '101,000 - 200,000', '201,000+']
+# BUILD FIELDS FOR HH SIZE
 hh_size = range(1,1001)
 budget_plan = ['Daily', 'Weekly', 'Monthly']
-selected_income = st.sidebar.selectbox('Select Income Level', income_range)
 selected_hh = st.sidebar.selectbox('Select No. of People to Plan for', hh_size)
 budget_type = st.sidebar.selectbox('Select Budget Type', budget_plan)
 
@@ -709,7 +704,7 @@ def daily_algorithm(foodmapping, freq_list):
 # calls all functions when the calculate button is pressed
 if calculateButton:
 
-    calculator = FoodCalculator(income= selected_income, hh_size=selected_hh)
+    calculator = FoodCalculator(hh_size=selected_hh)
     
     # set hh_segmentation
     hh_segmentation = {'Males': {'total_child': t_mchild, 'total_adolescent': t_madolescent,
