@@ -6,6 +6,7 @@ import femalefoodqty as ffq
 from PIL import Image
 import streamlit as st
 import pandas as pd
+import re
 
 
 # def __getIncomeLvl(self, option_no):
@@ -173,8 +174,23 @@ class FoodCalculator:
   
     
     
-    def __monthlybudget(self):
-        pass
+    def monthlybudget(self, selected_foods):
+        temp_result = self.weeklybudget(selected_foods)
+        # print('from weeklyresult budget\n',self.__result)
+        for day in temp_result['daily']:
+            # print(day)
+            for meal in temp_result['daily'][day]:
+                # print(meal)
+                for food,qty in meal.items():
+                    # print('old\n',food, qty)
+                    value,measure = int(re.findall('[0-9]+',qty)[0])*4,re.findall('[a-zA-Z]+',qty)[0]
+                    meal[food] = str(value)+measure
+                    # print(food, meal[food])
+        
+        self.__result = temp_result
+        # print('from monthlyresult budget\n',self.__result)
+        return self.__result
+
     
     
     
@@ -533,9 +549,8 @@ image1 = Image.open('foodcalc_image.jpg')
 st.markdown("<h1 style='text-align: center'> SOUPE FOOD CALCULATOR </h1>", unsafe_allow_html=True)
 st.image(image1, caption='Source (Picture: Omincalculator/Getty)')
 # BUILD FIELDS FOR HH SIZE
-hh_size = range(1,1001)
 budget_plan = ['Daily', 'Weekly', 'Monthly']
-selected_hh = st.sidebar.selectbox('Select No. of People to Plan for', hh_size)
+selected_hh = st.sidebar.number_input('Select No. of People to Plan for', min_value=0, max_value=1000)
 budget_type = st.sidebar.selectbox('Select Budget Type', budget_plan)
 
 
@@ -547,17 +562,22 @@ with hh_expander:
     # set headers for male and female
     cols[0].subheader('Male Segmentation')
     cols[1].subheader('Female Segmentation')
-    # generate selectfields
-    t_mchild = cols[0].selectbox('Total Male Child (2-5)', range(101))
-    t_madolescent = cols[0].selectbox('Total Male Adolescent (6-19)', range(101))
-    t_mmiddleage = cols[0].selectbox('Total Male Middle-age (20-29)', range(101))
-    t_madult = cols[0].selectbox('Total Male Adult (30-50)', range(101))
-    t_maged = cols[0].selectbox('Total Male Aged (51+)', range(101))
-    t_fchild = cols[1].selectbox('Total Female Child (2-5)', range(101))
-    t_fadolescent = cols[1].selectbox('Total Female Adolescent (6-19)', range(101))
-    t_fmiddleage = cols[1].selectbox('Total Female Middle-age (20-29)', range(101))
-    t_fadult = cols[1].selectbox('Total Female Adult (30-50)', range(101))
-    t_faged = cols[1].selectbox('Total Female Aged (51+)', range(101))
+    
+    # get total number of male & female people
+    t_mchild = cols[0].number_input('Total Male Child (2-5 years)', min_value=0, max_value=100)
+    t_madolescent = cols[0].number_input('Total Male Adolescent (6-19 years)', min_value=0, max_value=100)
+    t_mmiddleage = cols[0].number_input('Total Male Middle-age (20-29 years)', min_value=0, max_value=100)
+    t_madult = cols[0].number_input('Total Male Adult (30-50 years)', min_value=0, max_value=100)
+    t_maged = cols[0].number_input('Total Male Aged (51+ years)', min_value=0, max_value=100)
+    t_fchild = cols[1].number_input('Total Female Child (2-5 years)', min_value=0, max_value=100)
+    t_fadolescent = cols[1].number_input('Total Female Adolescent (6-19 years)', min_value=0, max_value=100)
+    t_fmiddleage = cols[1].number_input('Total Female Middle-age (20-29 years)', min_value=0, max_value=100)
+    t_fadult = cols[1].number_input('Total Female Adult (30-50 years)', min_value=0, max_value=100)
+    t_faged = cols[1].number_input('Total Female Aged (51+ years)', min_value=0, max_value=100)
+
+
+
+
 
 # set global available foodlist
 foodlist = ['','Jollof Rice','White Rice','Egusi Soup',
@@ -671,7 +691,7 @@ if budget_type =='Daily':
     daily_food_structure = show_dailyfields()
 
 
-if budget_type =='Weekly':
+if budget_type =='Weekly' or budget_type =='Monthly':
     weekly_food_structure = show_weeklyfields()
 
 
@@ -700,6 +720,113 @@ def daily_algorithm(foodmapping, freq_list):
         st.dataframe(ab)
         ct+=1
 
+def generate_resultcard(budgetresult):
+    # aa = [{'monday':{'Spaghetti':2, 'Eba': 2, 'Pap':2, 'Vegetable Soup':2}},
+    #         {'tuesday':{'Jollof Rice':2, 'Porridge':2}},
+    #         {'wednesday':{'White Rice':2, 'Stew': 2, 'Egusi Soup':2}},
+    #         {'thursday':{'Spaghetti':2, 'Eba': 2, 'Pap':2, 'Vegetable Soup':2}},
+    #         {'friday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':1}},
+    #         {'saturday':{'Spaghetti':1, 'Eba': 1, 'Pap':1, 'Vegetable Soup':1}},
+    #         {'sunday':{'Spaghetti':2, 'Eba': 2, 'Pap':2, 'Vegetable Soup':2}},
+    #         ]
+
+    st.write(f"Total Ingredients Qty for {selected_hh} {['person' if selected_hh==1 else 'people'][0]} Per {budget_type[:-2]}")
+    # st.write(budgetresult)
+
+    # ct = 0
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+    for day in days:
+        final_foodlist = {}
+        st.markdown(f'## {day}')
+        day= day.lower()
+        for foods in budgetresult['daily'][day]:
+            # st.write(foods)
+            for meal in foods.keys():
+                if '_' in meal:
+                    meal = meal.replace('_', ' ')
+
+                if 'Garri' in list(foods.keys()) :
+                    meal = 'Eba'
+                if 'Rice' in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                    meal = 'Jollof Rice'
+                if 'Rice' in list(foods.keys()) and 'Tomato_Paste' not in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                    meal = 'White Rice'
+                if 'Rice' not in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
+                    meal = 'Stew'
+                if 'Egusi' in list(foods.keys()) :
+                    meal = 'Egusi Soup'
+                if 'Vegetable' in list(foods.keys()) and 'Yam' not in list(foods.keys()) and 'Egusi' not in list(foods.keys()):
+                    meal = 'Vegetable Soup'
+                if 'Yam' in list(foods.keys()) and 'Vegetable' in list(foods.keys()):
+                    meal = 'Porridge'
+
+                if meal in foodlist:
+                    meal1 = foodlist[foodlist.index(meal)]
+                    if meal1 in foodlist:
+                        if meal1 not in final_foodlist:
+                            # st.write(meal1)
+                            final_foodlist[meal1]=foods
+
+        # st.write(final_foodlist)
+        dayfoodcontainer = st.beta_container()
+        with dayfoodcontainer:
+            foodarray = list(final_foodlist.keys())
+            foodcols = st.beta_columns(2)
+            # handles food list if only equal to or greater than 2
+            ct = 1
+            for i in range(len(foodarray)):
+                pair = foodarray[i:i+2]
+                if ct==1:
+                    # st.write(pair)
+                    foodcols[0].subheader(pair[0])
+                    try:
+                        foodcols[1].subheader(pair[1])
+                    except:pass
+                    # populate dataframes based on no. of columns from data result
+                    dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                    foodcols[0].dataframe(dataframe1)
+                    # st.write(final_foodlist[pair[0]].values())
+                    try:
+                        dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
+                        foodcols[1].dataframe(dataframe2)
+                        # st.write(final_foodlist[pair[1]].values())
+                    except:pass
+                    # foodcols[0].dataframe(dataframe1)
+                    # st.write(final_foodlist[pair[0]].values())
+                    # try:
+                    #     foodcols[1].dataframe(dataframe2)
+                    #     st.write(final_foodlist[pair[1]].values())
+                    # except:pass
+                elif ct%2!=0 and ct!=len(foodarray):
+                    # st.write(pair)
+                    foodcols[0].subheader(pair[0])
+                    try:
+                        foodcols[1].subheader(pair[1])
+                    except:pass
+                    # populate dataframes based on no. of columns from data result
+                    dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                    foodcols[0].dataframe(dataframe1)
+                    # st.write(final_foodlist[pair[0]].values())
+                    try:
+                        dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
+                        foodcols[1].dataframe(dataframe2)
+                        # st.write(final_foodlist[pair[1]].values())
+                    except:pass
+                    # foodcols[0].dataframe(dataframe1)
+                    # st.write(final_foodlist[pair[0]].values())
+                    # try:
+                    #     foodcols[1].dataframe(dataframe2)
+                    #     st.write(final_foodlist[pair[1]].values())
+                    # except:pass
+                elif ct%2!=0 and ct==len(foodarray):
+                    foodcols[0].subheader(pair[0])
+                    # populate dataframes based on no. of columns from data result
+                    dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
+                    foodcols[0].dataframe(dataframe1)
+                    # st.write(final_foodlist[pair[0]].values())
+                ct+=1
+
 
 # calls all functions when the calculate button is pressed
 if calculateButton:
@@ -723,118 +850,25 @@ if calculateButton:
 
     # FOR WEEKLY BUDGET
     elif budget_type == 'Weekly':
-        # check food structure is intact
         if check_food_structure(weekly_food_structure) == True:
-            # track = 0
-            # foods = {}
-            # for get_freq in [Freq1,Freq2,Freq3,Freq4,Freq5,Freq6,Freq7,Freq8,Freq9]:
-            #     track+=1
-            #     if get_freq>0:
-            #         curr_food = food_freq_mapping['Freq'+str(track)]
-            #         # print(curr_food)
-            #         foods[curr_food] = get_freq
-
 
             # pass in the hh_segmentation to the calculator engine and initialize with dummy food
             dummy_food =  {'food1':0, 'food2':0}
             calculator.engine(hh_segmentation, budget_plan = 0, **dummy_food)
 
-            aa = [{'monday':{'Spaghetti':2, 'Eba': 2, 'Pap':2, 'Vegetable Soup':2}},
-                    {'tuesday':{'Jollof Rice':2, 'Porridge':2}},
-                    {'wednesday':{'White Rice':2, 'Stew': 2, 'Egusi Soup':2}},
-                    {'thursday':{'Spaghetti':2, 'Eba': 2, 'Pap':2, 'Vegetable Soup':2}},
-                    {'friday':{'Spaghetti':0, 'Eba': 0, 'Pap':0, 'Vegetable Soup':0}},
-                    {'saturday':{'Spaghetti':0, 'Eba': 0, 'Pap':0, 'Vegetable Soup':0}},
-                    {'sunday':{'Spaghetti':0, 'Eba': 0, 'Pap':0, 'Vegetable Soup':0}},
-                    ]
-
             weeklyresult = calculator.weeklybudget(weekly_food_structure)
-            st.write(f"Total Ingredients Qty for {selected_hh} {['person' if selected_hh==1 else 'people'][0]} Per Week")
-            # st.write(weeklyresult)
-
-            # ct = 0
-            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-            for day in days:
-                final_foodlist = {}
-                st.markdown(f'## {day}')
-                day= day.lower()
-                for foods in weeklyresult['daily'][day]:
-                    # st.write(foods)
-                    for meal in foods.keys():
-                        if '_' in meal:
-                            meal = meal.replace('_', ' ')
-
-                        if 'Garri' in list(foods.keys()) :
-                            meal = 'Eba'
-                        if 'Rice' in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
-                            meal = 'Jollof Rice'
-                        if 'Rice' in list(foods.keys()) and 'Tomato_Paste' not in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
-                            meal = 'White Rice'
-                        if 'Rice' not in list(foods.keys()) and 'Tomato_Paste' in list(foods.keys()) and 'Tomato/Pepper' in list(foods.keys()):
-                            meal = 'Stew'
-                        if 'Egusi' in list(foods.keys()) :
-                            meal = 'Egusi Soup'
-                        if 'Vegetable' in list(foods.keys()) and 'Yam' not in list(foods.keys()) and 'Egusi' not in list(foods.keys()):
-                            meal = 'Vegetable Soup'
-                        if 'Yam' in list(foods.keys()) and 'Vegetable' in list(foods.keys()):
-                            meal = 'Porridge'
-
-                        if meal in foodlist:
-                            meal1 = foodlist[foodlist.index(meal)]
-                            if meal1 in foodlist:
-                                if meal1 not in final_foodlist:
-                                    # st.write(meal1)
-                                    final_foodlist[meal1]=foods
-
-                # st.write(final_foodlist)
-                dayfoodcontainer = st.beta_container()
-                with dayfoodcontainer:
-                    foodarray = list(final_foodlist.keys())
-                    foodcols = st.beta_columns(2)
-                    # handles food list if only equal to or greater than 2
-                    ct = 1
-                    for i in range(len(foodarray)):
-                        pair = foodarray[i:i+2]
-                        if ct==1:
-                            # st.write(pair)
-                            foodcols[0].subheader(pair[0])
-                            try:
-                                foodcols[1].subheader(pair[1])
-                            except:pass
-                            # populate dataframes based on no. of columns from data result
-                            dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
-                            try:
-                                dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
-                            except:pass
-                            foodcols[0].dataframe(dataframe1)
-                            try:
-                                foodcols[1].dataframe(dataframe2)
-                            except:pass
-                        elif ct%2!=0 and ct!=len(foodarray):
-                            # st.write(pair)
-                            foodcols[0].subheader(pair[0])
-                            try:
-                                foodcols[1].subheader(pair[1])
-                            except:pass
-                            # populate dataframes based on no. of columns from data result
-                            dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
-                            try:
-                                dataframe2 = pd.DataFrame(final_foodlist[pair[1]].items(), columns=['Ingredients', 'Qty'])
-                            except:pass
-                            foodcols[0].dataframe(dataframe1)
-                            try:
-                                foodcols[1].dataframe(dataframe2)
-                            except:pass
-                        elif ct%2!=0 and ct==len(foodarray):
-                            foodcols[0].subheader(pair[0])
-                            # populate dataframes based on no. of columns from data result
-                            dataframe1 = pd.DataFrame(final_foodlist[pair[0]].items(), columns=['Ingredients', 'Qty'])
-                            foodcols[0].dataframe(dataframe1)
-                        ct+=1
+            generate_resultcard(weeklyresult)
         else:
             st.exception(RuntimeError('Please select foods and recurrence for each day!'))
 
-    else:
-        st.warning(' Monthly Budget is coming soon! ')
 
+    # FOR MONTHLY BUDGET
+    elif budget_type == 'Monthly':
+        if check_food_structure(weekly_food_structure) == True:
+            dummy_food =  {'food1':0, 'food2':0}
+            calculator.engine(hh_segmentation, budget_plan = 0, **dummy_food)
+            monthlyresult = calculator.monthlybudget(weekly_food_structure)
+            # st.write(monthlyresult)
+            generate_resultcard(monthlyresult)
+        else:
+            st.exception(RuntimeError('Please select foods and recurrence for each day!'))
